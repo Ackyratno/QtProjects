@@ -1,0 +1,128 @@
+# ═══════════════════════════════════════════════════════════════
+#  Qt / C++ Universal .gitignore
+# ═══════════════════════════════════════════════════════════════
+
+# ─── Сборка (Build) ──────────────────────────────────────────
+build/
+build-*/
+cmake-build-*/
+out/
+bin/
+lib/
+
+# ─── Объектные файлы и библиотеки ────────────────────────────
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.lib
+*.exe
+
+# ─── Qt специфичное ──────────────────────────────────────────
+# Мета-объектный компилятор (MOC)
+moc_*.cpp
+moc_*.h
+moc_predefs.h
+
+# Компилятор ресурсов (RCC)
+qrc_*.cpp
+
+# Компилятор интерфейсов (UIC)
+ui_*.h
+
+# QML кэш
+*.qmlc
+*.jsc
+.qmlproject.user
+.qmlproject.user.*
+
+# Qt Creator
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.autosave
+CMakeLists.txt.user
+CMakeLists.txt.user.*
+
+# ─── CMake ───────────────────────────────────────────────────
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CMakeUserPresets.json
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+CMakeScripts/
+Testing/
+
+# ─── qmake ───────────────────────────────────────────────────
+*.qmake.stash
+.qmake.cache
+
+# ─── Conan (менеджер пакетов C++) ────────────────────────────
+conan/
+conanbuildinfo.*
+conaninfo.txt
+graph_info.json
+
+# ─── IDE: Qt Creator ────────────────────────────────────────
+*.creator
+*.creator.user
+*.creator.user.*
+*.config
+*.cflags
+*.cxxflags
+*.files
+*.includes
+
+# ─── IDE: CLion ──────────────────────────────────────────────
+.idea/
+
+# ─── IDE: VS Code ───────────────────────────────────────────
+.vscode/
+
+# ─── IDE: Visual Studio ─────────────────────────────────────
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.*
+*.ncb
+*.suo
+*.sdf
+*.opensdf
+*.user
+ipch/
+Debug/
+Release/
+x64/
+x86/
+
+# ─── IDE: KDevelop ──────────────────────────────────────────
+*.kdev4
+.kdev4/
+
+# ─── Отладка ─────────────────────────────────────────────────
+*.dSYM/
+*.pdb
+
+# ─── Прекомпилированные заголовки ────────────────────────────
+*.gch
+*.pch
+
+# ─── macOS ───────────────────────────────────────────────────
+.DS_Store
+*.app/
+
+# ─── Linux ───────────────────────────────────────────────────
+*~
+*.swp
+*.swo
+
+# ─── Windows ─────────────────────────────────────────────────
+Thumbs.db
+desktop.ini
