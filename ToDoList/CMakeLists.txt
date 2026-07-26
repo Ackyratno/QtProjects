@@ -10,6 +10,8 @@ qt_standard_project_setup()
 
 qt_add_executable(appToDoList
     src/main.cpp
+    src/todomodel.cpp
+    src/todomodel.h
 )
 
 qt_add_qml_module(appToDoList
@@ -17,6 +19,10 @@ qt_add_qml_module(appToDoList
     VERSION 1.0
     QML_FILES
         qml/Main.qml
+        qml/components/TodoDelegate.qml
+    RESOURCES
+        qml/icons/sun.svg
+        qml/icons/moon.svg
 )
 
 target_link_libraries(appToDoList
