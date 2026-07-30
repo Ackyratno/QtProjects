@@ -10,12 +10,27 @@ Item {
     property string imagePath: ""
     property string imageName: ""
 
+    // Сигнал, который мы отправим при клике на карточку
+    signal clicked(string path)
+
     Rectangle {
+        id: cardRect
         anchors.fill: parent
         anchors.margins: 4
-        color: "#1E1E1E"
+        
+        // Подсветка фона при наведении
+        color: mouseArea.containsMouse ? "#2A2A2A" : "#1E1E1E"
         radius: 8
         clip: true
+        
+        // Анимация увеличения карточки при наведении
+        scale: mouseArea.containsMouse ? 1.05 : 1.0
+        Behavior on scale {
+            NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
+        }
+        Behavior on color {
+            ColorAnimation { duration: 150 }
+        }
 
         // Само изображение с ленивой загрузкой
         Image {
@@ -54,6 +69,17 @@ Item {
                 width: parent.width - 8
                 horizontalAlignment: Text.AlignHCenter
             }
+        }
+
+        // Кликабельная зона
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: root.clicked(root.imagePath)
+            
+            // Чтобы курсор менялся на "руку" при наведении
+            cursorShape: Qt.PointingHandCursor
         }
     }
 }

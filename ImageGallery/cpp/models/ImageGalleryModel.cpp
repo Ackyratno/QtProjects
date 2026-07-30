@@ -1,6 +1,8 @@
 #include "ImageGalleryModel.h"
+#include <qdir.h>
 #include <qfileinfo.h>
 #include <qstringview.h>
+#include <qurl.h>
 
 ImageGalleryModel::ImageGalleryModel() {
   QString path = "/home/muslim/Изображения/ForGallery";
@@ -39,4 +41,16 @@ QHash<int, QByteArray> ImageGalleryModel::roleNames() const {
   obj[Name] = "name";
   obj[Path] = "path";
   return obj;
+}
+
+void ImageGalleryModel::setDirectory(QString Path) {
+  QString cleanPath = QUrl(Path).toLocalFile();
+  beginResetModel();
+
+  QDir dir(cleanPath);
+
+  dir.setNameFilters(QStringList() << "*.png" << "*.jpeg" << "*.jpg");
+  dir.setFilter(QDir::Files | QDir::NoDotAndDotDot);
+  m_images = dir.entryInfoList();
+  endResetModel();
 }
