@@ -1,0 +1,8 @@
+build/
+.qt/
+*.user
+*.db
+*.o
+*.a
+*.so
+.DS_Store
