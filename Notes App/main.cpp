@@ -1,5 +1,9 @@
+#include "SqliteNoteRepository.h"
+#include "NoteModel.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QQmlEngine>
 
 int main(int argc, char *argv[])
 {
@@ -8,7 +12,14 @@ int main(int argc, char *argv[])
     app.setOrganizationName("NotesAppOrg");
     app.setApplicationName("NotesApp");
 
+    // Инициализация слоя работы с данными и QML модели
+    SqliteRepository repo;
+    NoteModel noteModel(&repo);
+
     QQmlApplicationEngine engine;
+
+    // Передаем C++ модель в QML контекст
+    engine.rootContext()->setContextProperty("noteModel", &noteModel);
 
     // Реакция на ошибку создания QML объекта
     QObject::connect(
@@ -24,3 +35,4 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
+

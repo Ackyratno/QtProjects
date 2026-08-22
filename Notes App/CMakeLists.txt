@@ -14,7 +14,11 @@ qt_standard_project_setup()
 qt_add_executable(appNotesApp
     main.cpp
     cpp/models/Note.h
+    cpp/models/NoteModel.h
+    cpp/models/NoteModel.cpp
     cpp/repository/INoteRepository.h
+    cpp/repository/SqliteNoteRepository.h
+    cpp/repository/SqliteRepository.cpp
 )
 
 # Каталоги для поиска C++ заголовочных файлов
@@ -23,12 +27,19 @@ target_include_directories(appNotesApp PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/cpp/repository
 )
 
-# Подключение QML модуля Qt 6
+set_source_files_properties(qml/themes/Theme.qml PROPERTIES
+    QT_QML_SINGLETON_TYPE TRUE
+)
+
 qt_add_qml_module(appNotesApp
     URI NotesApp
     VERSION 1.0
     QML_FILES
         qml/Main.qml
+        qml/components/CustomButton.qml
+        qml/components/NoteCardDelegate.qml
+        qml/pages/NoteListPage.qml
+        qml/pages/NoteEditorDialog.qml
         qml/themes/Theme.qml
 )
 

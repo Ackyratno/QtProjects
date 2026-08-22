@@ -6,115 +6,180 @@ import NotesApp
 ApplicationWindow {
     id: root
     width: 900
-    height: 600
-    minimumWidth: 600
-    minimumHeight: 400
+    height: 650
+    minimumWidth: 620
+    minimumHeight: 480
     visible: true
     title: qsTr("Notes App")
 
     color: Theme.backgroundColor
 
-    // Главный контейнер макета
-    ColumnLayout {
+
+
+    // ── Страница списка заметок ──────────────────────────────────
+    NoteListPage {
         anchors.fill: parent
         anchors.margins: Theme.spacingLg
-        spacing: Theme.spacingMd
 
-        // Верхняя панель (Header)
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 60
-            color: Theme.surfaceHeaderColor
-            radius: Theme.radiusMd
+        onAddRequested: editorDialog.openForAdd()
+        onEditRequested: (id, title, content) => editorDialog.openForEdit(id, title, content)
+        onDeleteRequested: (id, title) => {
+            deleteConfirmDialog.targetId = id
+            deleteConfirmDialog.targetTitle = title
+            deleteConfirmDialog.open()
+        }
+    }
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: Theme.spacingMd
-                anchors.rightMargin: Theme.spacingMd
+    // ── Диалог создания / редактирования ────────────────────────
+    NoteEditorDialog {
+        id: editorDialog
 
-                Text {
-                    text: "📝 Notes App"
-                    color: Theme.textPrimary
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSizeHeading
-                    font.bold: true
+        onSaved: (id, title, content) => {
+            if (id > 0) {
+                noteModel.updateNote(id, title, content)
+            } else {
+                noteModel.addNote(title, content)
+            }
+        }
+    }
+
+    // ── Попап подтверждения удаления ─────────────────────────────
+    Dialog {
+        id: deleteConfirmDialog
+        modal: true
+        anchors.centerIn: parent
+        width: 400
+        padding: 0
+
+        property var targetId: 0
+        property string targetTitle: ""
+
+        enter: Transition {
+            NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 200; easing.type: Easing.OutCubic }
+            NumberAnimation { property: "scale"; from: 0.92; to: 1; duration: 200; easing.type: Easing.OutBack }
+        }
+        exit: Transition {
+            NumberAnimation { property: "opacity"; from: 1; to: 0; duration: 150; easing.type: Easing.InCubic }
+        }
+
+        background: Rectangle {
+            color: Theme.surfaceColor
+            radius: Theme.radiusLg
+            border.color: Theme.dangerColor
+            border.width: 1
+
+            // Тень
+            layer.enabled: true
+            layer.effect: null
+        }
+
+        contentItem: ColumnLayout {
+            spacing: 0
+
+            // Заголовок
+            Rectangle {
+                Layout.fillWidth: true
+                height: 52
+                color: Theme.surfaceHeaderColor
+                radius: Theme.radiusLg
+
+                // Нижние углы не скруглять
+                Rectangle {
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    height: parent.radius
+                    color: parent.color
                 }
 
-                Item { Layout.fillWidth: true } // Заполнитель
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: Theme.spacingMd
+                    spacing: Theme.spacingSm
 
-                Rectangle {
-                    width: 110
-                    height: 36
-                    color: statusMouseArea.containsMouse ? Theme.primaryHoverColor : Theme.primaryColor
-                    radius: Theme.radiusSm
+                    Text { text: "🗑️"; font.pixelSize: 18 }
 
                     Text {
-                        anchors.centerIn: parent
-                        text: "Этап 1: Ready"
+                        text: "Удаление заметки"
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSizeSm
+                        font.pixelSize: Theme.fontSizeSubheading
                         font.bold: true
-                    }
-
-                    MouseArea {
-                        id: statusMouseArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
                     }
                 }
             }
-        }
 
-        // Центральная область (Приветственный экран / Базовый каркас)
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            color: Theme.surfaceColor
-            radius: Theme.radiusLg
-            border.color: Theme.borderColor
-            border.width: 1
-
+            // Тело
             ColumnLayout {
-                anchors.centerIn: parent
+                Layout.fillWidth: true
                 spacing: Theme.spacingMd
+                Layout.margins: Theme.spacingLg
 
                 Text {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "🚀 Базовый каркас приложения создан!"
-                    color: Theme.textPrimary
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSizeTitle
-                    font.bold: true
-                }
-
-                Text {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "Этап 1 успешно инициализирован: CMake + Qt 6 Quick / QML + Theme System"
+                    text: "Вы собираетесь удалить заметку:"
                     color: Theme.textSecondary
                     font.family: Theme.fontFamily
                     font.pixelSize: Theme.fontSizeBody
+                    Layout.fillWidth: true
                 }
 
                 Rectangle {
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: 320
-                    Layout.preferredHeight: 48
+                    Layout.fillWidth: true
+                    height: quoteText.implicitHeight + Theme.spacingMd * 2
                     color: Theme.cardBackgroundColor
-                    radius: Theme.radiusMd
-                    border.color: Theme.borderColor
+                    radius: Theme.radiusSm
+                    border.color: Theme.dangerColor
                     border.width: 1
 
                     Text {
-                        anchors.centerIn: parent
-                        text: "Следующий шаг: Этап 2 (Note & INoteRepository)"
-                        color: Theme.accentColor
+                        id: quoteText
+                        anchors {
+                            left: parent.left; right: parent.right
+                            verticalCenter: parent.verticalCenter
+                            margins: Theme.spacingMd
+                        }
+                        text: "\"" + deleteConfirmDialog.targetTitle + "\""
+                        color: Theme.textPrimary
                         font.family: Theme.fontFamily
-                        font.pixelSize: Theme.fontSizeSm
+                        font.pixelSize: Theme.fontSizeBody
                         font.bold: true
+                        wrapMode: Text.Wrap
                     }
                 }
+
+                Text {
+                    text: "Это действие нельзя отменить."
+                    color: Theme.dangerColor
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.fontSizeSm
+                    Layout.fillWidth: true
+                }
+
+                // Кнопки
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: Theme.spacingSm
+
+                    Item { Layout.fillWidth: true }
+
+                    CustomButton {
+                        text: "Отмена"
+                        normalColor: Theme.cardBackgroundColor
+                        hoverColor: Theme.cardHoverColor
+                        onClicked: deleteConfirmDialog.reject()
+                    }
+
+                    CustomButton {
+                        text: "🗑 Удалить"
+                        normalColor: Theme.dangerColor
+                        hoverColor: Theme.dangerHoverColor
+                        onClicked: {
+                            noteModel.deleteNote(deleteConfirmDialog.targetId)
+                            deleteConfirmDialog.accept()
+                        }
+                    }
+                }
+
+                Item { height: Theme.spacingSm }
             }
         }
     }

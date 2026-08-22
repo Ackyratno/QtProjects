@@ -9,8 +9,8 @@ public:
   virtual ~INoteRepository() = default;
 
   virtual std::vector<Note> getAllNotes() = 0;
-  virtual std::optional<Note> getNoteById() = 0;
+  virtual std::optional<Note> getNoteById(quint64 id) = 0;
   virtual qint64 addNote(const Note &note) = 0;
-  virtual bool updateNode(const Note &note) = 0;
-  virtual quint64 deleteNode(quint64 id) = 0;
+  virtual bool updateNote(const Note &note) = 0;
+  virtual bool deleteNote(quint64 id) = 0;
 };
